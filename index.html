@@ -59,13 +59,14 @@
     max-width:var(--maxw);margin:0 auto;padding:16px 24px;
     display:flex;align-items:center;justify-content:space-between;gap:16px;
   }
-  .brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:15px;letter-spacing:-.03em;color:var(--ink);}
-  .brand .dot{
-    width:28px;height:28px;border-radius:8px;
-    background:var(--orange);
-    flex:none;display:flex;align-items:center;justify-content:center;
-    color:#fff;font-size:14px;font-weight:900;letter-spacing:0;
+  .brand{
+    display:inline-flex;align-items:center;justify-content:center;
+    background:var(--orange);color:#fff;
+    font-weight:900;font-size:15px;letter-spacing:-.02em;
+    padding:8px 16px;border-radius:8px;
+    transition:background .2s;
   }
+  .brand:hover{background:var(--orange-deep);}
   .nav-links{display:flex;gap:2px;align-items:center;}
   .nav-links a{
     font-size:14px;color:var(--ink-soft);font-weight:600;
@@ -405,10 +406,7 @@
 <!-- ============ Sticky Navigation ============ -->
 <nav class="nav" id="nav" aria-label="주요 메뉴">
   <div class="nav-inner">
-    <a class="brand" href="#hero" aria-label="홈으로">
-      <span class="dot" aria-hidden="true">밥</span>
-      4청년부 밥퍼
-    </a>
+    <a class="brand" href="#hero" aria-label="홈으로">밥퍼 사역</a>
     <div class="nav-links">
       <a href="#why">의미</a>
       <a href="#story">이야기</a>
