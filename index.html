@@ -172,23 +172,27 @@
 
   /* Hero 행사 정보 카드 */
   .hero-card{
-    background:var(--bg-soft);border-radius:var(--radius);padding:32px 30px;
-    border:1px solid var(--line);
+    background:rgba(0,0,0,.45);
+    backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+    border:1px solid rgba(255,255,255,.14);
+    border-radius:var(--radius);padding:32px 30px;
     position:relative;
   }
   .hero-card::before{
-    content:"";position:absolute;top:0;left:0;right:0;height:4px;
+    content:"";position:absolute;top:0;left:0;right:0;height:3px;
     background:var(--orange);border-radius:var(--radius) var(--radius) 0 0;
   }
   .hero-card h3{
-    font-size:11px;letter-spacing:.14em;text-transform:uppercase;
-    color:var(--orange);margin-bottom:20px;font-weight:800;
+    font-size:11px;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--orange);margin-bottom:22px;font-weight:800;
   }
-  .info-row{display:flex;gap:14px;padding:13px 0;border-bottom:1px solid var(--line);align-items:flex-start;}
+  .info-row{
+    display:flex;flex-direction:column;gap:4px;
+    padding:13px 0;border-bottom:1px solid rgba(255,255,255,.1);
+  }
   .info-row:last-child{border-bottom:none;}
-  .info-row .ico{font-size:18px;line-height:1.5;flex:none;width:24px;text-align:center;}
-  .info-row .k{font-size:12px;color:var(--ink-soft);font-weight:700;margin-bottom:2px;letter-spacing:.04em;}
-  .info-row .v{font-size:15px;font-weight:700;color:var(--ink);}
+  .info-row .k{font-size:11px;color:rgba(255,255,255,.55);font-weight:700;letter-spacing:.08em;text-transform:uppercase;}
+  .info-row .v{font-size:15px;font-weight:700;color:#fff;}
 
   /* ============ 섹션 2. WHY ============ */
   .why{background:var(--bg-soft);border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
@@ -450,20 +454,20 @@
     <aside class="hero-card reveal in" aria-label="행사 정보 요약">
       <h3>행사 안내</h3>
       <div class="info-row">
-        <span class="ico" aria-hidden="true">🗓️</span>
-        <div><div class="k">일시</div><div class="v">2026년 7월 18일 토요일</div></div>
+        <div class="k">일시</div>
+        <div class="v">2026년 7월 18일 토요일</div>
       </div>
       <div class="info-row">
-        <span class="ico" aria-hidden="true">📍</span>
-        <div><div class="k">장소</div><div class="v">다일공동체 밥퍼나눔운동본부</div></div>
+        <div class="k">장소</div>
+        <div class="v">다일공동체 밥퍼나눔운동본부</div>
       </div>
       <div class="info-row">
-        <span class="ico" aria-hidden="true">🙋</span>
-        <div><div class="k">대상</div><div class="v">분당우리교회 4청년부</div></div>
+        <div class="k">대상</div>
+        <div class="v">분당우리교회 4청년부</div>
       </div>
       <div class="info-row">
-        <span class="ico" aria-hidden="true">🍚</span>
-        <div><div class="k">내용</div><div class="v">식사 준비, 배식, 설거지, 정리 등</div></div>
+        <div class="k">내용</div>
+        <div class="v">식사 준비, 배식, 설거지, 정리 등</div>
       </div>
     </aside>
   </div>
