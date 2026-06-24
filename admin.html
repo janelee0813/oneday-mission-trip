@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>관리자 · 밥퍼 봉사 신청 현황</title>
+<style>
+  :root{
+    --bg:#FFFFFF;
+    --bg-soft:#FFF8F4;
+    --surface:#FFFFFF;
+    --ink:#111111;
+    --ink-soft:#555555;
+    --orange:#E8621A;
+    --orange-deep:#C44D0C;
+    --orange-light:#FFF0E8;
+    --dark:#111111;
+    --line:#E8E8E8;
+    --radius:12px;
+    --ease:cubic-bezier(.22,.61,.36,1);
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;background:var(--bg);color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Apple SD Gothic Neo","Pretendard","Noto Sans KR",sans-serif;
+    line-height:1.6;-webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,p{margin:0;}
+  a{color:inherit;text-decoration:none;}
+
+  /* Nav */
+  .nav{
+    position:sticky;top:0;z-index:50;
+    background:rgba(255,255,255,.95);backdrop-filter:blur(12px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav-inner{
+    max-width:1100px;margin:0 auto;padding:14px 24px;
+    display:flex;align-items:center;justify-content:space-between;gap:16px;
+  }
+  .brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:15px;}
+  .brand .dot{
+    width:28px;height:28px;border-radius:8px;background:var(--orange);
+    color:#fff;font-size:13px;font-weight:900;display:flex;align-items:center;justify-content:center;
+  }
+  .nav-badge{
+    font-size:12px;font-weight:700;color:var(--orange);
+    background:var(--orange-light);border:1px solid #FDDECE;
+    border-radius:999px;padding:4px 12px;
+  }
+
+  /* Login */
+  .login-wrap{
+    min-height:calc(100vh - 60px);display:flex;align-items:center;justify-content:center;
+    padding:40px 24px;background:var(--bg-soft);
+  }
+  .login-card{
+    background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+    padding:48px 40px;max-width:400px;width:100%;text-align:center;
+  }
+  .login-icon{
+    width:64px;height:64px;border-radius:16px;background:var(--orange-light);
+    margin:0 auto 24px;display:flex;align-items:center;justify-content:center;
+    font-size:28px;
+  }
+  .login-card h2{font-size:22px;font-weight:900;letter-spacing:-.03em;margin-bottom:8px;}
+  .login-card p{font-size:14px;color:var(--ink-soft);margin-bottom:28px;}
+  .login-card input{
+    width:100%;font:inherit;font-size:16px;color:var(--ink);
+    background:var(--bg-soft);border:1.5px solid var(--line);border-radius:8px;
+    padding:14px 16px;margin-bottom:14px;transition:border-color .2s,box-shadow .2s;
+  }
+  .login-card input:focus{
+    outline:none;border-color:var(--orange);background:#fff;
+    box-shadow:0 0 0 4px rgba(232,98,26,.12);
+  }
+  .login-btn{
+    width:100%;background:var(--orange);color:#fff;border:none;
+    border-radius:8px;padding:15px;font:inherit;font-size:16px;font-weight:700;cursor:pointer;
+    transition:background .2s,transform .2s var(--ease);
+  }
+  .login-btn:hover{background:var(--orange-deep);transform:translateY(-1px);}
+  .login-err{
+    display:none;color:#CC3300;font-size:13px;font-weight:600;margin-top:-4px;margin-bottom:10px;
+  }
+  .login-err.show{display:block;}
+
+  /* Dashboard */
+  .dashboard{display:none;padding:40px 0 80px;}
+  .dashboard.show{display:block;}
+  .dash-wrap{max-width:1100px;margin:0 auto;padding:0 24px;}
+
+  /* Summary bar */
+  .summary-bar{
+    display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between;
+    margin-bottom:32px;
+  }
+  .summary-left h1{font-size:clamp(22px,3.5vw,30px);font-weight:900;letter-spacing:-.04em;}
+  .summary-left p{font-size:14px;color:var(--ink-soft);margin-top:4px;}
+  .summary-stats{display:flex;gap:12px;flex-wrap:wrap;}
+  .stat-pill{
+    background:var(--orange);color:#fff;border-radius:8px;padding:12px 22px;text-align:center;
+  }
+  .stat-pill b{display:block;font-size:24px;font-weight:900;letter-spacing:-.03em;line-height:1.1;}
+  .stat-pill span{font-size:12px;font-weight:700;opacity:.85;}
+
+  /* Action buttons */
+  .action-bar{
+    display:flex;gap:10px;flex-wrap:wrap;margin-bottom:24px;
+  }
+  .btn-action{
+    display:inline-flex;align-items:center;gap:7px;
+    font:inherit;font-size:14px;font-weight:700;cursor:pointer;
+    border-radius:8px;padding:10px 18px;transition:all .2s;
+  }
+  .btn-action.primary{background:var(--orange);color:#fff;border:none;}
+  .btn-action.primary:hover{background:var(--orange-deep);}
+  .btn-action.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--line);}
+  .btn-action.ghost:hover{border-color:var(--orange);color:var(--orange);}
+
+  /* Search / Filter */
+  .filter-bar{
+    display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px;
+  }
+  .search-input{
+    font:inherit;font-size:14px;color:var(--ink);
+    background:var(--bg-soft);border:1.5px solid var(--line);border-radius:8px;
+    padding:10px 16px;flex:1;min-width:200px;
+    transition:border-color .2s;
+  }
+  .search-input:focus{outline:none;border-color:var(--orange);}
+
+  /* Table */
+  .table-wrap{
+    background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+    overflow:hidden;overflow-x:auto;
+  }
+  table{width:100%;border-collapse:collapse;font-size:14px;min-width:600px;}
+  thead{background:var(--bg-soft);}
+  thead th{
+    padding:14px 16px;text-align:left;font-size:12px;font-weight:800;
+    color:var(--orange);letter-spacing:.08em;text-transform:uppercase;
+    border-bottom:1px solid var(--line);white-space:nowrap;
+  }
+  tbody tr{border-bottom:1px solid var(--line);transition:background .15s;}
+  tbody tr:last-child{border-bottom:none;}
+  tbody tr:hover{background:var(--bg-soft);}
+  tbody td{padding:14px 16px;color:var(--ink);vertical-align:top;}
+  .td-no{color:var(--ink-soft);font-size:13px;font-weight:600;width:40px;}
+  .td-name{font-weight:700;}
+  .td-cell{color:var(--orange);font-size:13px;font-weight:700;}
+  .td-phone{font-family:monospace;font-size:13px;}
+  .td-memo{color:var(--ink-soft);max-width:200px;}
+  .td-time{color:var(--ink-soft);font-size:12px;white-space:nowrap;}
+  .empty-row td{text-align:center;padding:48px;color:var(--ink-soft);}
+
+  /* Loading / Error */
+  .state-msg{text-align:center;padding:60px 24px;color:var(--ink-soft);}
+  .state-msg .icon{font-size:40px;margin-bottom:16px;}
+  .state-msg p{font-size:15px;}
+
+  @media(max-width:600px){
+    .login-card{padding:32px 24px;}
+    .summary-bar{flex-direction:column;align-items:flex-start;}
+  }
+</style>
+</head>
+<body>
+
+<!-- Nav -->
+<nav class="nav">
+  <div class="nav-inner">
+    <div class="brand">
+      <span class="dot">밥</span>
+      4청년부 밥퍼 봉사
+    </div>
+    <span class="nav-badge">관리자 페이지</span>
+  </div>
+</nav>
+
+<!-- 로그인 -->
+<div class="login-wrap" id="loginWrap">
+  <div class="login-card">
+    <div class="login-icon">🔐</div>
+    <h2>관리자 로그인</h2>
+    <p>신청 현황을 확인하려면<br>관리자 비밀번호를 입력해 주세요.</p>
+    <input type="password" id="pwInput" placeholder="비밀번호" autocomplete="current-password" />
+    <p class="login-err" id="loginErr">비밀번호가 올바르지 않아요.</p>
+    <button class="login-btn" id="loginBtn">확인</button>
+  </div>
+</div>
+
+<!-- 대시보드 -->
+<div class="dashboard" id="dashboard">
+  <div class="dash-wrap">
+    <!-- Summary -->
+    <div class="summary-bar">
+      <div class="summary-left">
+        <h1>밥퍼 봉사 신청 현황</h1>
+        <p id="lastUpdated">마지막 업데이트: —</p>
+      </div>
+      <div class="summary-stats">
+        <div class="stat-pill">
+          <b id="totalCount">0</b>
+          <span>총 신청자</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="action-bar">
+      <button class="btn-action primary" id="refreshBtn">↻ 새로고침</button>
+      <button class="btn-action ghost" id="csvBtn">⬇ CSV 다운로드</button>
+      <button class="btn-action ghost" id="printBtn">🖨 인쇄</button>
+      <button class="btn-action ghost" id="logoutBtn">로그아웃</button>
+    </div>
+
+    <!-- Filter -->
+    <div class="filter-bar">
+      <input class="search-input" type="text" id="searchInput" placeholder="이름 또는 순이름으로 검색..." />
+    </div>
+
+    <!-- Table -->
+    <div class="table-wrap">
+      <div class="state-msg" id="stateMsg">
+        <div class="icon">⏳</div>
+        <p>데이터를 불러오는 중이에요...</p>
+      </div>
+      <table id="dataTable" style="display:none;">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>성함</th>
+            <th>순이름</th>
+            <th>연락처</th>
+            <th>메모</th>
+            <th>신청일시</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+/* =========================================================
+   ▼ 여기에 Google Apps Script 웹앱 URL 입력
+   index.html의 FORM_ENDPOINT와 동일한 URL
+========================================================= */
+const FORM_ENDPOINT = "";
+
+let allData = [];
+let adminPw = "";
+
+/* ---------- 로그인 ---------- */
+const loginBtn = document.getElementById("loginBtn");
+const pwInput  = document.getElementById("pwInput");
+
+pwInput.addEventListener("keydown", function(e){
+  if(e.key === "Enter") loginBtn.click();
+});
+
+loginBtn.addEventListener("click", async function(){
+  const pw = pwInput.value.trim();
+  if(!pw) return;
+
+  loginBtn.disabled = true;
+  loginBtn.textContent = "확인 중...";
+
+  if(!FORM_ENDPOINT){
+    // 엔드포인트 없을 때 데모 모드
+    adminPw = pw;
+    showDashboard([]);
+    return;
+  }
+
+  try {
+    const res = await fetch(FORM_ENDPOINT + "?pw=" + encodeURIComponent(pw), {redirect:"follow"});
+    const data = await res.json();
+
+    if(!data.success){
+      showLoginError();
+      return;
+    }
+    adminPw = pw;
+    showDashboard(data.list || []);
+  } catch(err){
+    console.error(err);
+    showLoginError();
+  }
+});
+
+function showLoginError(){
+  document.getElementById("loginErr").classList.add("show");
+  loginBtn.disabled = false;
+  loginBtn.textContent = "확인";
+  pwInput.focus();
+}
+
+function showDashboard(list){
+  document.getElementById("loginWrap").style.display = "none";
+  document.getElementById("dashboard").classList.add("show");
+  renderTable(list);
+}
+
+/* ---------- 데이터 렌더 ---------- */
+function renderTable(list){
+  allData = list;
+  applyFilter();
+  document.getElementById("totalCount").textContent = list.length;
+  document.getElementById("lastUpdated").textContent =
+    "마지막 업데이트: " + new Date().toLocaleString("ko-KR");
+}
+
+function applyFilter(){
+  const q = document.getElementById("searchInput").value.trim().toLowerCase();
+  const filtered = q
+    ? allData.filter(function(r){ return (r.name+r.cell).toLowerCase().includes(q); })
+    : allData;
+  drawRows(filtered);
+}
+
+function drawRows(list){
+  const stateMsg  = document.getElementById("stateMsg");
+  const dataTable = document.getElementById("dataTable");
+  const tbody     = document.getElementById("tableBody");
+
+  if(list.length === 0){
+    stateMsg.style.display = "";
+    stateMsg.innerHTML = '<div class="icon">📋</div><p>'+(allData.length === 0 ? "아직 신청자가 없어요." : "검색 결과가 없어요.")+"</p>";
+    dataTable.style.display = "none";
+    return;
+  }
+
+  stateMsg.style.display = "none";
+  dataTable.style.display = "";
+
+  tbody.innerHTML = list.map(function(r, i){
+    return "<tr>" +
+      "<td class='td-no'>" + (i+1) + "</td>" +
+      "<td class='td-name'>" + esc(r.name) + "</td>" +
+      "<td class='td-cell'>" + esc(r.cell) + "</td>" +
+      "<td class='td-phone'>" + esc(r.phone || "—") + "</td>" +
+      "<td class='td-memo'>" + esc(r.memo || "—") + "</td>" +
+      "<td class='td-time'>" + esc(r.time || "—") + "</td>" +
+    "</tr>";
+  }).join("");
+}
+
+function esc(s){
+  return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
+
+/* ---------- 검색 ---------- */
+document.getElementById("searchInput").addEventListener("input", applyFilter);
+
+/* ---------- 새로고침 ---------- */
+document.getElementById("refreshBtn").addEventListener("click", async function(){
+  if(!FORM_ENDPOINT || !adminPw) return;
+  const btn = document.getElementById("refreshBtn");
+  btn.textContent = "불러오는 중...";
+  btn.disabled = true;
+  try {
+    const res = await fetch(FORM_ENDPOINT + "?pw=" + encodeURIComponent(adminPw), {redirect:"follow"});
+    const data = await res.json();
+    if(data.success) renderTable(data.list || []);
+  } catch(e){ console.error(e); }
+  btn.textContent = "↻ 새로고침";
+  btn.disabled = false;
+});
+
+/* ---------- CSV 다운로드 ---------- */
+document.getElementById("csvBtn").addEventListener("click", function(){
+  if(allData.length === 0){ alert("다운로드할 데이터가 없어요."); return; }
+  const header = ["번호","성함","순이름","연락처","메모","신청일시"];
+  const rows = allData.map(function(r, i){
+    return [i+1, r.name, r.cell, r.phone||"", r.memo||"", r.time||""];
+  });
+  const csv = "﻿" + [header].concat(rows).map(function(r){
+    return r.map(function(v){ return '"'+String(v).replace(/"/g,'""')+'"'; }).join(",");
+  }).join("\n");
+  const blob = new Blob([csv], {type:"text/csv;charset=utf-8;"});
+  const url  = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url; a.download = "밥퍼봉사_신청자_" + new Date().toLocaleDateString("ko-KR").replace(/\./g,"").replace(/ /g,"") + ".csv";
+  a.click(); URL.revokeObjectURL(url);
+});
+
+/* ---------- 인쇄 ---------- */
+document.getElementById("printBtn").addEventListener("click", function(){
+  window.print();
+});
+
+/* ---------- 로그아웃 ---------- */
+document.getElementById("logoutBtn").addEventListener("click", function(){
+  adminPw = "";
+  allData = [];
+  pwInput.value = "";
+  document.getElementById("loginErr").classList.remove("show");
+  document.getElementById("dashboard").classList.remove("show");
+  document.getElementById("loginWrap").style.display = "";
+  loginBtn.disabled = false;
+  loginBtn.textContent = "확인";
+});
+</script>
+</body>
+</html>

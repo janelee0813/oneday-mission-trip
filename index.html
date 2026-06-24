@@ -355,6 +355,28 @@
   }
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 
+  /* ============ 섹션: 함께하는 사람들 ============ */
+  .together{background:var(--bg);border-top:1px solid var(--line);}
+  .together-header{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:32px;}
+  .count-badge{
+    display:inline-flex;align-items:center;gap:10px;
+    background:var(--orange-light);border:1.5px solid var(--orange-mid);
+    color:var(--orange);border-radius:999px;padding:10px 22px;
+    font-size:15px;font-weight:700;
+  }
+  .count-badge b{font-size:22px;font-weight:900;letter-spacing:-.03em;}
+  .applicant-grid{display:flex;flex-wrap:wrap;gap:10px;}
+  .applicant-chip{
+    display:inline-flex;align-items:center;gap:8px;
+    background:var(--bg-soft);border:1px solid var(--line);
+    border-radius:999px;padding:10px 20px;
+    font-size:14px;font-weight:600;color:var(--ink);
+    transition:border-color .2s,background .2s;
+  }
+  .applicant-chip:hover{border-color:var(--orange);background:var(--orange-light);}
+  .chip-cell{color:var(--orange);font-size:12px;font-weight:800;letter-spacing:.02em;}
+  .together-msg{color:var(--ink-soft);font-size:15px;line-height:1.8;}
+
   /* ============ 오렌지 강조 배너 (섹션 상단 숫자/stats) ============ */
   .stats-bar{
     background:var(--orange);
@@ -606,6 +628,20 @@
   </div>
 </section>
 
+<!-- ============ 섹션: 함께하는 사람들 ============ -->
+<section class="together" id="together">
+  <div class="wrap reveal">
+    <span class="eyebrow">함께하는 사람들</span>
+    <div class="together-header">
+      <h2 class="sec-title" style="margin-bottom:0">이미 함께하기로 했어요.</h2>
+      <div class="count-badge">총 <b id="applicantCount">0</b>명 신청</div>
+    </div>
+    <div class="applicant-grid" id="applicantGrid">
+      <p class="together-msg">불러오는 중...</p>
+    </div>
+  </div>
+</section>
+
 <!-- ============ 섹션 7. 마지막 초대 ============ -->
 <section class="invite" id="invite">
   <div class="wrap reveal">
@@ -724,7 +760,38 @@ function showComplete(){
   document.getElementById("done").classList.add("show");
   document.getElementById("done").scrollIntoView({behavior:"smooth", block:"center"});
   bumpCount();
+  setTimeout(loadApplicants, 1200);
 }
+
+function escapeHtml(s){
+  return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
+
+async function loadApplicants(){
+  const grid = document.getElementById("applicantGrid");
+  const countEl = document.getElementById("applicantCount");
+  if(!FORM_ENDPOINT){
+    grid.innerHTML = '<p class="together-msg">백엔드 연동 후 신청자 목록이 표시됩니다.</p>';
+    return;
+  }
+  try {
+    const res = await fetch(FORM_ENDPOINT, {redirect:"follow"});
+    const data = await res.json();
+    if(!data.success || !data.list || data.list.length === 0){
+      grid.innerHTML = '<p class="together-msg">아직 신청자가 없어요. 첫 번째로 함께해 주세요!</p>';
+      return;
+    }
+    countEl.textContent = data.list.length;
+    grid.innerHTML = data.list.map(function(p){
+      return '<div class="applicant-chip"><span class="chip-cell">'+escapeHtml(p.cell)+'</span><span>'+escapeHtml(p.name)+'</span></div>';
+    }).join("");
+  } catch(err){
+    console.error(err);
+    grid.innerHTML = '<p class="together-msg">목록을 불러올 수 없어요.</p>';
+  }
+}
+
+loadApplicants();
 
 function bumpCount(){
   const el = document.getElementById("countText");
