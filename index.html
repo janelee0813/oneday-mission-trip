@@ -477,15 +477,15 @@
 <div class="stats-bar" aria-label="밥퍼 사역 소개">
   <div class="stats-inner">
     <div class="stat-item">
-      <span class="stat-num">30년+</span>
+      <span class="stat-num" data-count="30" data-suffix="년+">30년+</span>
       <span class="stat-label">밥퍼 사역 역사</span>
     </div>
     <div class="stat-item">
-      <span class="stat-num">3,000명</span>
+      <span class="stat-num" data-count="3000" data-suffix="명" data-comma="true">3,000명</span>
       <span class="stat-label">하루 평균 급식 인원</span>
     </div>
     <div class="stat-item">
-      <span class="stat-num">1끼</span>
+      <span class="stat-num" data-count="1" data-suffix="끼">1끼</span>
       <span class="stat-label">우리가 나누는 사랑</span>
     </div>
   </div>
@@ -819,6 +819,34 @@ async function loadApplicants(){
 }
 
 loadApplicants();
+
+/* ---------- 카운트업 애니메이션 ---------- */
+function animateCount(el, target, duration){
+  const suffix  = el.dataset.suffix || "";
+  const useComma = el.dataset.comma === "true";
+  const start = performance.now();
+  function tick(now){
+    const p = Math.min((now - start) / duration, 1);
+    const eased = 1 - Math.pow(1 - p, 3); // ease-out cubic
+    const val = Math.round(eased * target);
+    el.textContent = (useComma ? val.toLocaleString("ko-KR") : val) + suffix;
+    if(p < 1) requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+}
+
+const statsObserver = new IntersectionObserver(function(entries){
+  entries.forEach(function(entry){
+    if(!entry.isIntersecting) return;
+    entry.target.querySelectorAll(".stat-num[data-count]").forEach(function(el){
+      animateCount(el, parseInt(el.dataset.count), 1800);
+    });
+    statsObserver.unobserve(entry.target);
+  });
+}, {threshold: 0.4});
+
+const statsBar = document.querySelector(".stats-bar");
+if(statsBar) statsObserver.observe(statsBar);
 
 function bumpCount(){
   const el = document.getElementById("countText");
