@@ -960,7 +960,11 @@ document.getElementById("donateBtn").addEventListener("click", async function(){
         headers:{"Prefer":"return=minimal"},
         body:JSON.stringify(payload)
       });
-      if(!res.ok) throw new Error("Supabase error " + res.status);
+      if(!res.ok){
+        const errBody = await res.text();
+        console.error("[donors POST]", res.status, errBody);
+        throw new Error(res.status + " " + errBody);
+      }
     } else {
       await new Promise(function(r){ setTimeout(r,500); });
     }
