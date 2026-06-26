@@ -834,7 +834,7 @@ function showToast(msg){
   toast.textContent = msg;
   toast.classList.add("show");
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(function(){ toast.classList.remove("show"); }, 2400);
+  toastTimer = setTimeout(function(){ toast.classList.remove("show"); }, 6000);
 }
 
 const submitBtn = document.getElementById("submitBtn");
@@ -963,7 +963,7 @@ document.getElementById("donateBtn").addEventListener("click", async function(){
       if(!res.ok){
         const errBody = await res.text();
         console.error("[donors POST]", res.status, errBody);
-        throw new Error(res.status + " " + errBody);
+        throw new Error("(" + res.status + ") " + errBody);
       }
     } else {
       await new Promise(function(r){ setTimeout(r,500); });
@@ -975,7 +975,7 @@ document.getElementById("donateBtn").addEventListener("click", async function(){
     setTimeout(loadDonors, 1200);
   } catch(err){
     console.error(err);
-    showToast("전송 중 문제가 생겼어요. 잠시 후 다시 시도해 주세요.");
+    showToast("에러: " + err.message);
     btn.disabled = false;
     btn.innerHTML = '후원 신청하기 <span class="arrow" aria-hidden="true">→</span>';
   }
