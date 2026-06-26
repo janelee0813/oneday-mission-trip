@@ -995,9 +995,7 @@ async function loadDonors(){
     const total = list.reduce(function(s,r){ return s+(r.amount||0); }, 0);
     totalEl.textContent = total.toLocaleString("ko-KR");
     grid.innerHTML = list.map(function(r){
-      return '<div class="donor-chip">'+escapeHtml(r.name)+
-        (r.amount ? '<span class="d-amount">'+r.amount.toLocaleString("ko-KR")+"원</span>" : "")+
-        '</div>';
+      return '<div class="donor-chip">'+escapeHtml(r.name)+'</div>';
     }).join("");
   } catch(err){
     console.error(err);
