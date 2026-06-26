@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>왜 함께할까요 · 밥퍼 사역</title>
+<style>
+  :root{
+    --bg:#FFFFFF;--bg-soft:#FFF8F4;--surface:#FFFFFF;
+    --ink:#111111;--ink-soft:#555555;
+    --orange:#E8621A;--orange-deep:#C44D0C;
+    --orange-light:#FFF0E8;--orange-mid:#FDDECE;
+    --dark:#111111;--line:#E8E8E8;
+    --radius:16px;--radius-sm:10px;
+    --maxw:1000px;--ease:cubic-bezier(.22,.61,.36,1);
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;background:var(--bg);color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Apple SD Gothic Neo","Pretendard","Noto Sans KR",sans-serif;
+    line-height:1.75;-webkit-font-smoothing:antialiased;letter-spacing:-.01em;
+  }
+  h1,h2,h3,p{margin:0;}
+  a{color:inherit;text-decoration:none;}
+  .wrap{width:100%;max-width:var(--maxw);margin:0 auto;padding:0 24px;}
+
+  /* Nav */
+  .nav{
+    position:sticky;top:0;z-index:50;
+    background:rgba(255,255,255,.95);
+    backdrop-filter:saturate(160%) blur(16px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav-inner{
+    max-width:var(--maxw);margin:0 auto;padding:16px 24px;
+    display:flex;align-items:center;justify-content:space-between;gap:16px;
+  }
+  .brand{
+    display:inline-flex;align-items:center;
+    background:var(--orange);color:#fff;font-weight:900;font-size:15px;
+    padding:8px 16px;border-radius:8px;transition:background .2s;
+  }
+  .brand:hover{background:var(--orange-deep);}
+  .nav-links{display:flex;gap:2px;}
+  .nav-links a{
+    font-size:14px;color:var(--ink-soft);font-weight:600;
+    padding:8px 14px;border-radius:8px;transition:color .2s,background .2s;
+  }
+  .nav-links a:hover,.nav-links a.active{color:var(--orange);background:var(--orange-light);}
+  .nav-cta{
+    background:var(--orange);color:#fff;font-weight:700;font-size:14px;
+    padding:10px 20px;border-radius:8px;transition:background .2s;white-space:nowrap;
+  }
+  .nav-cta:hover{background:var(--orange-deep);}
+  @media(max-width:680px){.nav-links{display:none;}}
+
+  /* Back */
+  .back-bar{padding:28px 0 0;}
+  .back-btn{
+    display:inline-flex;align-items:center;gap:6px;
+    font:inherit;font-size:14px;font-weight:700;color:var(--ink-soft);
+    background:none;border:none;cursor:pointer;padding:0;transition:color .2s;
+  }
+  .back-btn:hover{color:var(--orange);}
+
+  /* Page hero */
+  .page-hero{
+    padding:72px 0 64px;
+    border-bottom:1px solid var(--line);
+  }
+  .eyebrow{
+    display:inline-flex;align-items:center;gap:8px;
+    font-size:12px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--orange);margin-bottom:20px;
+  }
+  .page-title{
+    font-size:clamp(32px,5vw,52px);font-weight:900;line-height:1.18;
+    letter-spacing:-.05em;color:var(--ink);
+  }
+
+  /* Content */
+  .content{padding:64px 0 100px;}
+  .lead{font-size:clamp(16px,2vw,18px);color:var(--ink-soft);max-width:64ch;line-height:1.9;}
+  .lead+.lead{margin-top:24px;}
+  .pull{
+    margin-top:48px;padding:32px 36px;border-radius:var(--radius-sm);
+    background:rgba(232,98,26,.1);border-left:4px solid var(--orange);
+    font-size:clamp(18px,2.4vw,22px);font-weight:700;line-height:1.65;color:var(--ink);
+  }
+  .cta-row{margin-top:56px;display:flex;gap:12px;flex-wrap:wrap;}
+  .btn-primary{
+    display:inline-flex;align-items:center;gap:8px;
+    background:var(--orange);color:#fff;font-weight:700;font-size:16px;
+    padding:16px 30px;border-radius:8px;transition:background .2s,transform .2s var(--ease);
+    box-shadow:0 8px 24px -8px rgba(232,98,26,.5);
+  }
+  .btn-primary:hover{background:var(--orange-deep);transform:translateY(-2px);}
+  .btn-ghost-dark{
+    display:inline-flex;align-items:center;gap:8px;
+    background:transparent;color:var(--ink);font-weight:700;font-size:16px;
+    padding:16px 30px;border-radius:8px;border:1.5px solid var(--line);
+    transition:border-color .2s,color .2s;
+  }
+  .btn-ghost-dark:hover{border-color:var(--orange);color:var(--orange);}
+
+  /* Footer */
+  footer{
+    background:var(--dark);color:#888;text-align:center;
+    padding:44px 24px;font-size:13px;line-height:1.9;
+  }
+  footer b{color:#ccc;}
+  footer .f-orange{color:var(--orange);}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="index.html">밥퍼 사역</a>
+    <div class="nav-links">
+      <a href="why.html" class="active">의미</a>
+      <a href="story.html">이야기</a>
+      <a href="index.html#serve">섬김</a>
+      <a href="index.html#apply">신청</a>
+    </div>
+    <a class="nav-cta" href="index.html#apply">봉사 신청하기</a>
+  </div>
+</nav>
+
+<div class="wrap">
+  <div class="back-bar">
+    <button class="back-btn" onclick="history.back()">← 돌아가기</button>
+  </div>
+</div>
+
+<div class="page-hero">
+  <div class="wrap">
+    <span class="eyebrow">왜 함께할까요</span>
+    <h1 class="page-title">복음은 말에서 멈추지 않고,<br>누군가의 곁으로 갑니다.</h1>
+  </div>
+</div>
+
+<section class="content">
+  <div class="wrap">
+    <p class="lead">우리가 받은 복음은 누군가의 헌신을 통해 우리에게 흘러왔습니다. 초기 선교사들은 낯선 땅에서 사람들을 가르치고, 돌보고, 섬기며 복음을 전했습니다.</p>
+    <p class="lead">이번 밥퍼 봉사는 그 사랑을 오늘 우리의 자리에서 다시 흘려보내는 시간입니다. 밥을 나르고, 배식하고, 설거지하는 작아 보이는 섬김이지만, 누군가에게는 하루를 버티는 위로가 될 수 있습니다.</p>
+    <div class="pull">한 끼의 식사가, 하나님의 사랑을 전하는 통로가 될 수 있습니다.</div>
+    <div class="cta-row">
+      <a class="btn-primary" href="index.html#apply">봉사 신청하기 →</a>
+      <a class="btn-ghost-dark" href="story.html">기전여고 이야기 보기</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <b>분당우리교회 4청년부</b> · 밥퍼나눔운동본부 봉사활동<br>
+  <span class="f-orange">2026년 7월 18일 토요일</span> · 다일공동체 밥퍼나눔운동본부
+</footer>
+
+</body>
+</html>
