@@ -390,6 +390,43 @@
   .chip-cell{color:var(--orange);font-size:12px;font-weight:800;letter-spacing:.02em;}
   .together-msg{color:var(--ink-soft);font-size:15px;line-height:1.8;}
 
+  /* ============ 섹션 6-B. 후원금 보내기 ============ */
+  .donate{background:var(--bg);border-top:1px solid var(--line);}
+  .donate-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:start;margin-top:40px;}
+  @media(max-width:780px){.donate-grid{grid-template-columns:1fr;}}
+  .account-box{
+    margin-top:28px;background:var(--orange-light);
+    border:1.5px solid var(--orange-mid);border-radius:var(--radius-sm);padding:22px 24px;
+  }
+  .account-box dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:10px 20px;align-items:baseline;}
+  .account-box dt{font-size:12px;font-weight:800;color:var(--orange);letter-spacing:.06em;text-transform:uppercase;white-space:nowrap;}
+  .account-box dd{margin:0;font-size:15px;font-weight:700;color:var(--ink);}
+  .donate-form-card{
+    background:var(--surface);border-radius:var(--radius);
+    padding:clamp(28px,5vw,40px);border:1px solid var(--line);box-shadow:var(--shadow-soft);
+  }
+  .donate-form-card .submit-btn{width:100%;margin-top:6px;font-size:17px;padding:18px;}
+
+  /* ============ 후원자 명단 ============ */
+  .donors-section{background:var(--bg-soft);border-top:1px solid var(--line);}
+  .donors-header{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:32px;}
+  .donor-total-badge{
+    display:inline-flex;align-items:center;gap:6px;
+    background:var(--orange);color:#fff;border-radius:999px;padding:10px 22px;
+    font-size:15px;font-weight:700;
+  }
+  .donor-total-badge b{font-size:20px;font-weight:900;letter-spacing:-.03em;}
+  .donor-grid{display:flex;flex-wrap:wrap;gap:10px;}
+  .donor-chip{
+    display:inline-flex;align-items:center;gap:8px;
+    background:var(--surface);border:1px solid var(--line);
+    border-radius:999px;padding:10px 20px;
+    font-size:14px;font-weight:600;color:var(--ink);
+    transition:border-color .2s,background .2s;
+  }
+  .donor-chip:hover{border-color:var(--orange);background:var(--orange-light);}
+  .donor-chip .d-amount{color:var(--orange);font-size:12px;font-weight:800;}
+
   /* ============ 오렌지 강조 배너 (섹션 상단 숫자/stats) ============ */
   .stats-bar{
     background:var(--orange);
@@ -640,6 +677,64 @@
   </div>
 </section>
 
+<!-- ============ 섹션 6-B. 후원금 보내기 ============ -->
+<section class="donate" id="donate">
+  <div class="wrap reveal">
+    <span class="eyebrow">후원 참여</span>
+    <h2 class="sec-title">후원금으로 함께하기</h2>
+    <div class="donate-grid">
+      <div class="donate-intro">
+        <p class="lead">직접 봉사에 참여하기 어려운 분들도 후원금으로 함께하실 수 있습니다. 소중한 후원은 밥퍼나눔운동본부의 급식 사역에 사용됩니다.</p>
+        <div class="account-box">
+          <dl>
+            <dt>계좌</dt><dd>추후 안내 예정</dd>
+            <dt>예금주</dt><dd>—</dd>
+          </dl>
+        </div>
+      </div>
+      <div class="donate-form-card">
+        <div id="donateFormBody">
+          <div class="field" id="fd-name">
+            <label for="d-name">성함 <span class="req" aria-hidden="true">*</span></label>
+            <input id="d-name" type="text" placeholder="홍길동" autocomplete="name" />
+            <p class="err" id="d-name-err">성함을 입력해 주세요.</p>
+          </div>
+          <div class="field" id="fd-amount">
+            <label for="d-amount">후원 금액 <span class="req" aria-hidden="true">*</span></label>
+            <input id="d-amount" type="text" inputmode="numeric" placeholder="10,000" />
+            <p class="err" id="d-amount-err">금액을 입력해 주세요.</p>
+          </div>
+          <div class="field" id="fd-phone">
+            <label for="d-phone">연락처 <span class="req" aria-hidden="true">*</span></label>
+            <input id="d-phone" type="tel" inputmode="tel" placeholder="010-0000-0000" />
+            <p class="err" id="d-phone-err">연락처를 정확히 입력해 주세요.</p>
+          </div>
+          <button class="btn btn-primary submit-btn" type="button" id="donateBtn">후원 신청하기 <span class="arrow" aria-hidden="true">→</span></button>
+        </div>
+        <div class="done" id="donateDone" role="status" aria-live="polite">
+          <div class="check" aria-hidden="true">✓</div>
+          <h3>후원 신청이 완료되었습니다.</h3>
+          <p>소중한 마음 감사합니다.<br>계좌 안내 후 입금해 주시면 됩니다.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 섹션: 후원자 명단 ============ -->
+<section class="donors-section" id="donors-section">
+  <div class="wrap reveal">
+    <span class="eyebrow">후원자 명단</span>
+    <div class="donors-header">
+      <h2 class="sec-title" style="margin-bottom:0">마음을 보내주신 분들</h2>
+      <div class="donor-total-badge">총 <b id="donorTotal">0</b>원</div>
+    </div>
+    <div class="donor-grid" id="donorGrid">
+      <p class="together-msg">불러오는 중...</p>
+    </div>
+  </div>
+</section>
+
 <!-- ============ 섹션: 함께하는 사람들 ============ -->
 <section class="together" id="together">
   <div class="wrap reveal">
@@ -819,6 +914,100 @@ async function loadApplicants(){
 }
 
 loadApplicants();
+
+/* =========================================================
+   후원 폼
+========================================================= */
+const dPhoneEl = document.getElementById("d-phone");
+dPhoneEl.addEventListener("input", function(){
+  let d = dPhoneEl.value.replace(/[^0-9]/g,"").slice(0,11);
+  if(d.length < 4){ dPhoneEl.value = d; }
+  else if(d.length < 8){ dPhoneEl.value = d.slice(0,3)+"-"+d.slice(3); }
+  else { dPhoneEl.value = d.slice(0,3)+"-"+d.slice(3,7)+"-"+d.slice(7); }
+});
+
+document.getElementById("d-amount").addEventListener("input", function(){
+  let raw = this.value.replace(/[^0-9]/g,"");
+  this.value = raw ? parseInt(raw,10).toLocaleString("ko-KR") : "";
+});
+
+function setInvalidD(id, on){
+  document.getElementById(id).classList.toggle("invalid", on);
+}
+
+function validateDonate(){
+  let ok = true;
+  const name   = document.getElementById("d-name").value.trim();
+  const amount = document.getElementById("d-amount").value.replace(/,/g,"").trim();
+  const ph     = document.getElementById("d-phone").value.trim();
+  const phoneOk = /^01[016789]-?\d{3,4}-?\d{4}$/.test(ph.replace(/\s/g,""));
+  setInvalidD("fd-name",   !name);                                    if(!name)    ok = false;
+  setInvalidD("fd-amount", !amount || isNaN(parseInt(amount,10)));    if(!amount)  ok = false;
+  setInvalidD("fd-phone",  !phoneOk);                                 if(!phoneOk) ok = false;
+  return ok;
+}
+
+document.getElementById("donateBtn").addEventListener("click", async function(){
+  if(!validateDonate()){ showToast("필수 항목을 확인해 주세요."); return; }
+  const btn = this;
+  const payload = {
+    name:   document.getElementById("d-name").value.trim(),
+    amount: parseInt(document.getElementById("d-amount").value.replace(/,/g,""),10),
+    phone:  document.getElementById("d-phone").value.trim()
+  };
+  btn.disabled = true; btn.textContent = "처리 중...";
+  try {
+    if(SUPABASE_URL && SUPABASE_KEY){
+      const res = await sbFetch("/rest/v1/donors", {
+        method:"POST",
+        headers:{"Prefer":"return=minimal"},
+        body:JSON.stringify(payload)
+      });
+      if(!res.ok) throw new Error("Supabase error " + res.status);
+    } else {
+      await new Promise(function(r){ setTimeout(r,500); });
+    }
+    document.getElementById("donateFormBody").style.display = "none";
+    const done = document.getElementById("donateDone");
+    done.classList.add("show");
+    done.scrollIntoView({behavior:"smooth",block:"center"});
+    setTimeout(loadDonors, 1200);
+  } catch(err){
+    console.error(err);
+    showToast("전송 중 문제가 생겼어요. 잠시 후 다시 시도해 주세요.");
+    btn.disabled = false;
+    btn.innerHTML = '후원 신청하기 <span class="arrow" aria-hidden="true">→</span>';
+  }
+});
+
+async function loadDonors(){
+  const grid    = document.getElementById("donorGrid");
+  const totalEl = document.getElementById("donorTotal");
+  if(!SUPABASE_URL || !SUPABASE_KEY){
+    grid.innerHTML = '<p class="together-msg">Supabase 연동 후 후원자 명단이 표시됩니다.</p>';
+    return;
+  }
+  try {
+    const res  = await sbFetch("/rest/v1/donors?select=name,amount&order=created_at.asc");
+    const list = await res.json();
+    if(!Array.isArray(list) || list.length === 0){
+      grid.innerHTML = '<p class="together-msg">아직 후원자가 없어요. 첫 번째로 함께해 주세요!</p>';
+      totalEl.textContent = "0";
+      return;
+    }
+    const total = list.reduce(function(s,r){ return s+(r.amount||0); }, 0);
+    totalEl.textContent = total.toLocaleString("ko-KR");
+    grid.innerHTML = list.map(function(r){
+      return '<div class="donor-chip">'+escapeHtml(r.name)+
+        (r.amount ? '<span class="d-amount">'+r.amount.toLocaleString("ko-KR")+"원</span>" : "")+
+        '</div>';
+    }).join("");
+  } catch(err){
+    console.error(err);
+    grid.innerHTML = '<p class="together-msg">목록을 불러올 수 없어요.</p>';
+  }
+}
+loadDonors();
 
 /* ---------- 카운트업 애니메이션 ---------- */
 function animateCount(el, target, duration){

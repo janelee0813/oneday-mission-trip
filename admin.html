@@ -165,6 +165,20 @@
     .login-card{padding:32px 24px;}
     .summary-bar{flex-direction:column;align-items:flex-start;}
   }
+
+  /* Tabs */
+  .tab-bar{
+    display:flex;gap:0;border-bottom:2px solid var(--line);margin-bottom:24px;
+  }
+  .tab-btn{
+    padding:12px 24px;font:inherit;font-size:15px;font-weight:700;
+    cursor:pointer;background:transparent;border:none;
+    color:var(--ink-soft);border-bottom:3px solid transparent;margin-bottom:-2px;
+    transition:color .2s,border-color .2s;
+  }
+  .tab-btn.active{color:var(--orange);border-bottom-color:var(--orange);}
+  .tab-btn:hover:not(.active){color:var(--ink);}
+  .td-amount{font-weight:700;color:var(--orange);font-variant-numeric:tabular-nums;}
 </style>
 </head>
 <body>
@@ -201,43 +215,76 @@
       <div class="summary-stats">
         <div class="stat-pill">
           <b id="totalCount">0</b>
-          <span>총 신청자</span>
+          <span>봉사 신청자</span>
+        </div>
+        <div class="stat-pill" style="background:var(--dark)">
+          <b id="donorCount">—</b>
+          <span>후원자</span>
+        </div>
+        <div class="stat-pill" style="background:var(--dark)">
+          <b id="donorSum">—</b>
+          <span>후원 합계</span>
         </div>
       </div>
     </div>
 
-    <!-- Actions -->
-    <div class="action-bar">
-      <button class="btn-action primary" id="refreshBtn">↻ 새로고침</button>
-      <button class="btn-action ghost" id="csvBtn">⬇ CSV 다운로드</button>
-      <button class="btn-action ghost" id="printBtn">🖨 인쇄</button>
-      <button class="btn-action ghost" id="logoutBtn">로그아웃</button>
+    <!-- Tab Bar -->
+    <div class="tab-bar">
+      <button class="tab-btn active" id="tabApplicants" type="button" onclick="switchTab('applicants')">봉사 신청자</button>
+      <button class="tab-btn" id="tabDonors" type="button" onclick="switchTab('donors')">후원자</button>
     </div>
 
-    <!-- Filter -->
-    <div class="filter-bar">
-      <input class="search-input" type="text" id="searchInput" placeholder="이름 또는 순이름으로 검색..." />
-    </div>
-
-    <!-- Table -->
-    <div class="table-wrap">
-      <div class="state-msg" id="stateMsg">
-        <div class="icon">⏳</div>
-        <p>데이터를 불러오는 중이에요...</p>
+    <!-- Panel: 봉사 신청자 -->
+    <div id="panelApplicants">
+      <div class="action-bar">
+        <button class="btn-action primary" id="refreshBtn">↻ 새로고침</button>
+        <button class="btn-action ghost" id="csvBtn">⬇ CSV 다운로드</button>
+        <button class="btn-action ghost" id="printBtn">🖨 인쇄</button>
+        <button class="btn-action ghost" id="logoutBtn">로그아웃</button>
       </div>
-      <table id="dataTable" style="display:none;">
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>성함</th>
-            <th>순이름</th>
-            <th>연락처</th>
-            <th>메모</th>
-            <th>신청일시</th>
-          </tr>
-        </thead>
-        <tbody id="tableBody"></tbody>
-      </table>
+      <div class="filter-bar">
+        <input class="search-input" type="text" id="searchInput" placeholder="이름 또는 순이름으로 검색..." />
+      </div>
+      <div class="table-wrap">
+        <div class="state-msg" id="stateMsg">
+          <div class="icon">⏳</div>
+          <p>데이터를 불러오는 중이에요...</p>
+        </div>
+        <table id="dataTable" style="display:none;">
+          <thead>
+            <tr>
+              <th>#</th><th>성함</th><th>순이름</th><th>연락처</th><th>메모</th><th>신청일시</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Panel: 후원자 -->
+    <div id="panelDonors" style="display:none;">
+      <div class="action-bar">
+        <button class="btn-action primary" id="refreshDonorsBtn">↻ 새로고침</button>
+        <button class="btn-action ghost" id="csvDonorsBtn">⬇ CSV 다운로드</button>
+        <button class="btn-action ghost" id="logoutBtn2">로그아웃</button>
+      </div>
+      <div class="filter-bar">
+        <input class="search-input" type="text" id="donorSearchInput" placeholder="이름으로 검색..." />
+      </div>
+      <div class="table-wrap">
+        <div class="state-msg" id="donorStateMsg">
+          <div class="icon">⏳</div>
+          <p>데이터를 불러오는 중이에요...</p>
+        </div>
+        <table id="donorTable" style="display:none;">
+          <thead>
+            <tr>
+              <th>#</th><th>성함</th><th>금액</th><th>연락처</th><th>신청일시</th>
+            </tr>
+          </thead>
+          <tbody id="donorTableBody"></tbody>
+        </table>
+      </div>
     </div>
   </div>
 </div>
@@ -399,15 +446,100 @@ document.getElementById("printBtn").addEventListener("click", function(){
 });
 
 /* ---------- 로그아웃 ---------- */
-document.getElementById("logoutBtn").addEventListener("click", function(){
-  adminPw = "";
-  allData = [];
+function doLogout(){
+  allData = []; allDonors = []; donorsLoaded = false;
   pwInput.value = "";
   document.getElementById("loginErr").classList.remove("show");
   document.getElementById("dashboard").classList.remove("show");
   document.getElementById("loginWrap").style.display = "";
-  loginBtn.disabled = false;
-  loginBtn.textContent = "확인";
+  loginBtn.disabled = false; loginBtn.textContent = "확인";
+  switchTab('applicants');
+}
+document.getElementById("logoutBtn").addEventListener("click", doLogout);
+document.getElementById("logoutBtn2").addEventListener("click", doLogout);
+
+/* ---------- 탭 전환 ---------- */
+let allDonors   = [];
+let donorsLoaded = false;
+
+function switchTab(tab){
+  document.getElementById("tabApplicants").classList.toggle("active", tab === 'applicants');
+  document.getElementById("tabDonors").classList.toggle("active",     tab === 'donors');
+  document.getElementById("panelApplicants").style.display = (tab === 'applicants') ? "" : "none";
+  document.getElementById("panelDonors").style.display     = (tab === 'donors')     ? "" : "none";
+  if(tab === 'donors' && !donorsLoaded) loadDonors();
+}
+
+/* ---------- 후원자 데이터 ---------- */
+async function loadDonors(){
+  if(!SUPABASE_URL || !SUPABASE_KEY) return;
+  const btn = document.getElementById("refreshDonorsBtn");
+  btn.textContent = "불러오는 중..."; btn.disabled = true;
+  try {
+    const res  = await sbFetch("/rest/v1/donors?select=*&order=created_at.asc");
+    const list = await res.json();
+    if(Array.isArray(list)){ renderDonors(list); donorsLoaded = true; }
+  } catch(e){ console.error(e); }
+  btn.textContent = "↻ 새로고침"; btn.disabled = false;
+}
+
+function renderDonors(list){
+  allDonors = list;
+  const total = list.reduce(function(s,r){ return s+(r.amount||0); }, 0);
+  document.getElementById("donorCount").textContent = list.length;
+  document.getElementById("donorSum").textContent   = total.toLocaleString("ko-KR")+"원";
+  applyDonorFilter();
+}
+
+function applyDonorFilter(){
+  const q = document.getElementById("donorSearchInput").value.trim().toLowerCase();
+  const filtered = q
+    ? allDonors.filter(function(r){ return r.name.toLowerCase().includes(q); })
+    : allDonors;
+  drawDonorRows(filtered);
+}
+
+function drawDonorRows(list){
+  const stateMsg = document.getElementById("donorStateMsg");
+  const table    = document.getElementById("donorTable");
+  const tbody    = document.getElementById("donorTableBody");
+  if(list.length === 0){
+    stateMsg.style.display = "";
+    stateMsg.innerHTML = '<div class="icon">📋</div><p>'+(allDonors.length === 0 ? "아직 후원자가 없어요." : "검색 결과가 없어요.")+"</p>";
+    table.style.display = "none"; return;
+  }
+  stateMsg.style.display = "none"; table.style.display = "";
+  tbody.innerHTML = list.map(function(r,i){
+    return "<tr>"+
+      "<td class='td-no'>"+(i+1)+"</td>"+
+      "<td class='td-name'>"+esc(r.name)+"</td>"+
+      "<td class='td-amount'>"+(r.amount ? r.amount.toLocaleString("ko-KR")+"원" : "—")+"</td>"+
+      "<td class='td-phone'>"+esc(r.phone||"—")+"</td>"+
+      "<td class='td-time'>"+esc(r.created_at ? new Date(r.created_at).toLocaleString("ko-KR") : "—")+"</td>"+
+    "</tr>";
+  }).join("");
+}
+
+document.getElementById("donorSearchInput").addEventListener("input", applyDonorFilter);
+
+document.getElementById("refreshDonorsBtn").addEventListener("click", function(){
+  donorsLoaded = false; loadDonors();
+});
+
+document.getElementById("csvDonorsBtn").addEventListener("click", function(){
+  if(allDonors.length === 0){ alert("다운로드할 데이터가 없어요."); return; }
+  const header = ["번호","성함","금액","연락처","신청일시"];
+  const rows = allDonors.map(function(r,i){
+    return [i+1, r.name, r.amount||"", r.phone||"", r.created_at ? new Date(r.created_at).toLocaleString("ko-KR") : ""];
+  });
+  const csv = "﻿" + [header].concat(rows).map(function(r){
+    return r.map(function(v){ return '"'+String(v).replace(/"/g,'""')+'"'; }).join(",");
+  }).join("\n");
+  const blob = new Blob([csv], {type:"text/csv;charset=utf-8;"});
+  const url  = URL.createObjectURL(blob);
+  const a = document.createElement("a"); a.href = url;
+  a.download = "밥퍼봉사_후원자_" + new Date().toLocaleDateString("ko-KR").replace(/\./g,"").replace(/ /g,"") + ".csv";
+  a.click(); URL.revokeObjectURL(url);
 });
 </script>
 </body>
